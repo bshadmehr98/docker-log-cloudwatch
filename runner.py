@@ -97,7 +97,6 @@ class Runner(object):
                     logStreamName=self.cw_stream,
                     logEvents=self._unsend_logs,
                 )
-                print(line, res)
                 logging.debug(f" [!] Sent {len(self._unsend_logs)} logs to server")
                 self._unsend_logs = []
             except Exception as e:
