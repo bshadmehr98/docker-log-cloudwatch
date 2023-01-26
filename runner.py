@@ -89,7 +89,7 @@ class Runner(object):
         with the next log"""
         for line in self._container.logs(stream=True):
             self._unsend_logs.append(
-                {"timestamp": int(time.time()), "message": str(line)}
+                {"timestamp": round(time.time() * 1000), "message": str(line)}
             )
             try:
                 res = self._log_client.put_log_events(
@@ -98,6 +98,7 @@ class Runner(object):
                     logEvents=self._unsend_logs,
                 )
                 logging.debug(f" [!] Sent {len(self._unsend_logs)} logs to server")
+                print(f"response is: {self.cw_group}, {self.cw_stream}, {self._unsend_logs}")
                 self._unsend_logs = []
             except Exception as e:
                 logging.error(
