@@ -97,9 +97,12 @@ class Runner(object):
                     logStreamName=self.cw_stream,
                     logEvents=self._unsend_logs,
                 )
-                logging.debug(f" [!] Sent {len(self._unsend_logs)} logs to server")
-                print(f"response is: {self.cw_group}, {self.cw_stream}, {self._unsend_logs}")
-                self._unsend_logs = []
+                if 'rejectedLogEventsInfo' in res and len(res['rejectedLogEventsInfo']):
+                    e = res['rejectedLogEventsInfo']
+                    logging.error(f' [*] Got an error while tried to add {len(self._unsend_logs)} logs: {e}')
+                else:
+                    logging.debug(f" [!] Sent {len(self._unsend_logs)} logs to server")
+                    self._unsend_logs = []
             except Exception as e:
                 logging.error(
                     f" [*] Got an error while tried to add {len(self._unsend_logs)} logs: {e}"
